@@ -1,10 +1,15 @@
 require 'sinatra'
 
+get '/hello' do
+  @name = "Artem"
+  erb :hello
+end
+
 get '/write' do
   erb :write
 end
 
-post '/save' do
+post '/submit' do
   log = params[:log]
   time = Time.now
   formattedTime = time.strftime("%B %d, %Y - %I:%M %p")
@@ -19,3 +24,4 @@ get "/entries" do
   @entries = File.exist?("log.txt") ? File.readlines("log.txt") : []
   erb :entries
 end
+
