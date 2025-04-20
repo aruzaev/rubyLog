@@ -1,0 +1,14 @@
+<h1>Your Journal Entries</h1>
+
+<% if @entries.empty? %>
+    <p>No entries yet<p>
+<% else %>
+    <ul>
+        <% @entries.each do |entry| %>
+            <li><%= entry %>
+        <% end %>
+    </ul>
+<% end %>
+
+<a href="/write">Write a new entry«</a>
+
