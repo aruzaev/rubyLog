@@ -1,4 +1,129 @@
-<form action="/submit" method="POST">
-    <input type="text" name="log">
-    <button type="submit">Save</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Write – Daily Entry</title>
+  <style>
+    body {
+      background-color: #fefefe;
+      color: #1e1e1e;
+      font-family: "Georgia", serif;
+      margin: 0;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .nav {
+      font-size: 0.9rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .word-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 15px 0 25px;
+    }
+
+    .box {
+      width: 15px;
+      height: 15px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+    }
+
+    .box.filled {
+      background-color: #2ecc71;
+      border-color: #2ecc71;
+    }
+
+    textarea {
+      width: 100%;
+      height: 400px;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+      background-color: #fafafa;
+      color: #1e1e1e;
+    }
+
+    .word-count {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #666;
+      text-align: right;
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: #444;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <% now = Time.now %>
+    <h1><%= now.strftime("%A, %B %e, %Y") %></h1>
+    <div class="nav">
+      &lt; Mar | <strong><%= now.strftime("%b") %></strong> | +
+    </div>
+
+    <div class="word-bar" id="wordBar">
+      <% 30.times do |i| %>
+        <div class="box" id="box-<%= i %>"></div>
+      <% end %>
+    </div>
+
+    <form action="/submit" method="post">
+      <textarea name="log" id="log" placeholder="Write something here..."></textarea>
+      <div class="word-count" id="wordCount">0 words</div>
+      <button type="submit">Save Entry</button>
+    </form>
+  </div>
+
+  <script>
+    const textarea = document.getElementById('log');
+    const wordCountDisplay = document.getElementById('wordCount');
+
+    textarea.addEventListener('input', () => {
+      const text = textarea.value.trim();
+      const wordCount = text === '' ? 0 : text.split(/\s+/).length;
+      wordCountDisplay.textContent = `${wordCount} word${wordCount !== 1 ? 's' : ''}`;
+
+      // Fill progress bar
+      const maxBoxes = 30;
+      const wordsPerBox = 25;
+      const filled = Math.min(Math.floor(wordCount / wordsPerBox), maxBoxes);
+
+      for (let i = 0; i < maxBoxes; i++) {
+        const box = document.getElementById(`box-${i}`);
+        box.classList.toggle('filled', i < filled);
+      }
+    });
+  </script>
+</body>
+</html>

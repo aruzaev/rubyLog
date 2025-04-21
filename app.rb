@@ -5,6 +5,11 @@ get '/hello' do
   erb :hello
 end
 
+get '/' do
+  puts "redirecting to /write"
+  redirect "/write"
+end
+
 get '/write' do
   erb :write
 end
@@ -24,4 +29,3 @@ get "/entries" do
   @entries = File.exist?("log.txt") ? File.readlines("log.txt") : []
   erb :entries
 end
-

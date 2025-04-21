@@ -1,14 +1,152 @@
-<h1>Your Journal Entries</h1>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Journal Dashboard</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #e0e0e0;
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 0;
+    }
 
-<% if @entries.empty? %>
-    <p>No entries yet<p>
-<% else %>
-    <ul>
-        <% @entries.each do |entry| %>
-            <li><%= entry %>
-        <% end %>
-    </ul>
-<% end %>
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
 
-<a href="/write">Write a new entry«</a>
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
 
+    .nav {
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    .nav button {
+      background-color: transparent;
+      border: none;
+      color: #aaa;
+      margin: 0 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .calendar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 30px;
+    }
+
+    .day {
+      width: 20px;
+      height: 20px;
+      background-color: #333;
+      border-radius: 4px;
+      border: 1px solid #555;
+    }
+
+    .day.filled {
+      background-color: #2ecc71;
+      border: 1px solid #2ecc71;
+    }
+
+    .day:hover {
+      outline: 1px solid white;
+    }
+
+    .entry {
+      background-color: #2a2a2a;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      border-left: 4px solid #444;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .timestamp {
+      font-weight: bold;
+      color: #8fbc8f;
+    }
+
+    .content {
+      margin-top: 5px;
+    }
+
+    .no-entries {
+      text-align: center;
+      margin-top: 40px;
+      color: #888;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    a.button {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 30px;
+      background-color: #444;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    a.button:hover {
+      background-color: #222;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <% current_time = Time.now %>
+    <h1><%= current_time.strftime("%A, %B %e, %Y") %></h1>
+
+    <div class="nav">
+      <button>&lt; Mar</button>
+      <button>Apr</button>
+      <button>+</button>
+    </div>
+
+    <div class="calendar">
+      <% 30.times do |i| %>
+        <% # fake "filled" for demo purposes — can connect with real logic later %>
+        <div class="day <%= i == 3 ? 'filled' : '' %>"></div>
+      <% end %>
+    </div>
+
+    <% if @entries.empty? %>
+      <p class="no-entries">You haven't written anything yet.</p>
+    <% else %>
+      <% @entries.reverse.each_with_index do |entry, index| %>
+        <% timestamp = entry[/\[(.*?)\]/, 1] %>
+        <% content = entry.sub(/\[.*?\]\s*/, '') %>
+        <div class="entry">
+          <div class="timestamp"><%= timestamp %></div>
+          <div class="content"><%= content %></div>
+          <form action="/delete" method="post" style="margin-top: 10px;">
+            <input type="hidden" name="index" value="<%= index %>">
+            <button type="submit" style="background-color:#aa3333; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete</button>
+          </form>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div class="button-container">
+      <a href="/write" class="button">Write a New Entry</a>
+      <a href="/export" class="button" style="background-color:#339966;">Export as TXT</a>
+    </div>
+  </div>
+</body>
+</html>
