@@ -61,6 +61,19 @@
       outline: 1px solid white;
     }
 
+    .calendar a {
+      text-decoration: none;
+      display: inline-block;
+      line-height: 0;
+      color: inherit;
+    }
+
+    .filter-info {
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
     .entry {
       background-color: #2a2a2a;
       padding: 15px 20px;
@@ -120,11 +133,19 @@
     </div>
 
     <div class="calendar">
-      <% 30.times do |i| %>
-        <% # fake "filled" for demo purposes — can connect with real logic later %>
-        <div class="day <%= i == 3 ? 'filled' : '' %>"></div>
+      <% (1..@days_in_month).each do |d| %>
+        <% filled = @filled_days.include?(d) %>
+        <a href="/entries?day=<%= d %>">
+          <div class="day <%= 'filled' if filled %>" title="<%= d %>"></div>
+        </a>
       <% end %>
     </div>
+
+    <% if params['day'] %>
+      <div class="filter-info">
+        Showing entries for <strong><%= params['day'] %> <%= Time.now.strftime('%b %Y') %></strong> - <a href="/entries">Show All</a>
+      </div>
+    <% end %>
 
     <% if @entries.empty? %>
       <p class="no-entries">You haven't written anything yet.</p>
